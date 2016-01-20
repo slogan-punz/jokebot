@@ -2,8 +2,10 @@
 
 read nick buff word
 
+key="$(cat notakey.txt)"
 function call { $(echo "$1" |grep -P "$2" > /dev/null) ; }
 function output { echo "PRIVMSG $1 :$2" ; }
+
 
 if   call "$word" "\bjokebot: joke\b"\|"\!joke" ;  then
     batchNum=$(sed -n "1p" counter.txt)
@@ -152,8 +154,8 @@ elif call "$nick" "\bpunz\b" && call "$word" "jokebot: testing" ; then
     echo "PART #robots"
 
 elif call "$nick" "\bpunz\b" && call "$word" "jokebot: reconnect" ; then
-    echo "JOIN #dadjokes catsonly"
-    echo "JOIN #robots catsonly"
+    echo "JOIN #dadjokes $key"
+    echo "JOIN #robots $key"
 
 elif call "$word" "jokebot: source" ; then
     output $buff "https://github.com/slogan-punz/jokebot"

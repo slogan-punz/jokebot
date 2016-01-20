@@ -1,5 +1,6 @@
 #!/bin/bash
 
+key="$(cat notakey.txt)"
 function talk {
     echo "-> $1"
     echo "$1" >> .jokefile
@@ -12,8 +13,8 @@ tail -f .jokefile | openssl s_client -connect irc.cat.pdx.edu:6697 | while true 
     if [[ -z $started ]] ; then
         talk "NICK jokebot"
         talk "USER jokebot jokebot jokebot jokebot"
-        talk "JOIN #robots catsonly"
-        talk "JOIN #dadjokes catsonly"
+        talk "JOIN #robots $key"
+        talk "JOIN #dadjokes"
         talk "JOIN #LHStest"
         started="yes"
     fi
