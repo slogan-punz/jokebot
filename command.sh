@@ -155,4 +155,7 @@ elif call "$nick" "\bpunz\b" && call "$word" "jokebot: reconnect" ; then
     echo "JOIN #dadjokes catsonly"
     echo "JOIN #robots catsonly"
 
+elif call "$word" "jokebot: source" ; then
+    output $buff "https://github.com/slogan-punz/jokebot"
+
 fi
