@@ -23,41 +23,27 @@ function tellJoke {
 
     lineNum=$(($batchTen + $batchOne))
     let "lineNum++"
-
-    joke=$(sed -n "${lineNum}p" jokes.txt)
-    awns=$(sed -n "${lineNum}p" awnsers.txt)
     
-    output $buff "$nick: $lineNum: $joke"
-    output $buff "$nick: $lineNum: $awns"
+    if [[ $lineNum -gt $jokeNum ]] ; then
+         joke=$(sed -n "${jokeNum}p" jokes.txt)
+         awns=$(sed -n "${jokeNum}p" awnsers.txt)
+           
+         output $buff "$nick: $jokeNum: $joke"
+         output $buff "$nick: $jokeNum: $awns"
+
+     elif [[ $jokeNum -gt $lineNum ]] ; then
+        joke=$(sed -n "${lineNum}p" jokes.txt)
+        awns=$(sed -n "${lineNum}p" awnsers.txt)
+
+        output $buff "$nick: $lineNum: $joke"
+        output $buff "$nick: $lineNum: $awns"
+
+    fi
 
     }
 
 if   call "$word" "\bjokebot: joke\b"\|"\!joke" ;  then
-   # batchNum=$(sed -n "1p" counter.txt)
-   # jokeNum="$(wc -l < jokes.txt)"
-   # (( batches = $jokeNum / 3 ))
-   # >counter.txt
-   # let "batchNum++"
-   # if [ $batchNum == $batches ]; then
-   #     batchNum=0
-   #     echo "$batchNum" >> counter.txt
-   # else
-   #     echo "$batchNum" >> counter.txt
-   # fi
-   # 
-   # batchOne=$(($RANDOM%3))
-   # batchTen=$((3 * $batchNum))
-
-   # lineNum=$(($batchTen + $batchOne))
-   # let "lineNum++"
-
-   # joke=$(sed -n "${lineNum}p" jokes.txt)
-   # awns=$(sed -n "${lineNum}p" awnsers.txt)
-    
-   # output $buff "$nick: $lineNum: $joke"
-   # output $buff "$nick: $lineNum: $awns"
-
-
+   
    buffmsg="$(echo $word | cut -d "#" -f2)"
    msg="$(echo $buffmsg | cut -d ":" -f 2-3)"
    num1="$(echo $msg | cut -d "e" -f3)"
