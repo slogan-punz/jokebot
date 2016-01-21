@@ -5,7 +5,12 @@ read nick buff word
 key="$(cat notakey.txt)"
 function call { $(echo "$1" |grep -P "$2" > /dev/null) ; }
 function output { echo "PRIVMSG $1 :$2" ; }
-function tellJoke {    
+function tellJoke {
+    ## This this system makes sure that the same joke is never told twice
+    ## It also is semi random
+    ## Every time the function is called the the joke number whill always increase by three and randomly increase from 0-3
+    ## The joke is then pulled from the file using sed and is sent to the buffer where the joke command was used
+    
     batchNum=$(sed -n "1p" counter.txt)
     jokeNum="$(wc -l < jokes.txt)"
     (( batches = $jokeNum / 3 ))
@@ -44,6 +49,11 @@ function tellJoke {
 
 if   call "$word" "\bjokebot: joke\b"\|"\!joke" ;  then
    
+    ## This checks whether when the person uses the joke command if theres a number after it indicating they want a specific numbered joke
+    ## Because there are multiple ways to call the joke function we cut the message multiple and check each cut\
+    ## If there is a number, it will pull the text from that line number out of the files and display them
+    ## If there is no number it will call the tellJoke function
+
    buffmsg="$(echo $word | cut -d "#" -f2)"
    msg="$(echo $buffmsg | cut -d ":" -f 2-3)"
    num1="$(echo $msg | cut -d "e" -f3)"
@@ -70,8 +80,10 @@ if   call "$word" "\bjokebot: joke\b"\|"\!joke" ;  then
      
 
 
-   # tellJoke
 elif call "$word" "\bjokebot: newJoke\b"\|"\bjokebot: newjoke\b"\|"\bjokebot: addjoke\b"\|"\bjokebot: addJoke\b" ; then
+    
+    ## This allows for users to add their own jokes    
+    
     jokeLine="$(wc -l < newJoke.txt)"
     punchLine="$(wc -l < newPunch.txt)"
 
@@ -170,6 +182,8 @@ elif call "$word" "\bjokebot: privmsg\b" ; then
     output $nick "hi" 
 
 elif call "$nick" "\bpunz\b" && call "$word" "jokebot: testing" ; then
+    ## These can only be called(succesefullly) by me(punz)
+    
     output "#robots" "Not broken just testing"
     echo "PART #dadjokes"
     echo "PART #robots"
@@ -178,7 +192,9 @@ elif call "$nick" "\bpunz\b" && call "$word" "jokebot: reconnect" ; then
     echo "JOIN #dadjokes $key"
     echo "JOIN #robots $key"
 
-elif call "$word" "jokebot: source" ; then
+elif call "$word" "\bjokebot: source\b" ; then
     output $buff "https://github.com/slogan-punz/jokebot"
 
+elif call "$word" "jokebot:" ; then
+    output $buff "Hmm? (maybe use jokebot: help or commands)"
 fi
